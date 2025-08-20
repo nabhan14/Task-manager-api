@@ -1,0 +1,28 @@
+{
+  "name": "task-manager-api",
+  "version": "1.0.0",
+  "description": "A full-stack Task Manager app with Node.js, Express, MySQL backend and an interactive frontend for managing tasks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nabhan14/Task-manager-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nabhan14/Task-manager-api/issues"
+  },
+  "homepage": "https://github.com/nabhan14/Task-manager-api#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
