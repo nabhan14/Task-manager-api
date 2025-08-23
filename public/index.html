@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 420px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .task-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #43a047;
+    }
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .task-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .completed-section {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 2px solid #ddd;
+    }
+    .completed-task {
+      text-decoration: line-through;
+      color: gray;
+      padding: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Task Manager</h1>
+    <div class="task-input">
+      <input type="text" id="title" placeholder="Task title">
+      <input type="text" id="description" placeholder="Task description">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <div id="tasks"></div>
+
+    <div class="completed-section">
+      <h2>Completed</h2>
+      <div id="completedTasks"></div>
+    </div>
+  </div>
+
+  <script>
+    async function fetchTasks() {
+      const res = await fetch('/api/tasks');
+      const tasks = await res.json();
+      const tasksDiv = document.getElementById('tasks');
+      const completedDiv = document.getElementById('completedTasks');
+      tasksDiv.innerHTML = '';
+      completedDiv.innerHTML = '';
+
+      tasks.forEach(task => {
+        if (task.completed) {
+          // Completed tasks
+          const completedTask = document.createElement('div');
+          completedTask.className = 'completed-task';
+          completedTask.innerText = `${task.title} - ${task.description}`;
+          completedDiv.appendChild(completedTask);
+        } else {
+          // Active tasks
+          const taskDiv = document.createElement('div');
+          taskDiv.className = 'task';
+
+          const info = document.createElement('div');
+          info.className = 'task-info';
+          info.innerHTML = `<strong>${task.title}</strong><small>${task.description}</small>`;
+
+          const completeBtn = document.createElement('button');
+          completeBtn.textContent = 'Complete';
+          completeBtn.style.background = '#2196F3';
+          completeBtn.onclick = async () => {
+            await fetch(`/api/tasks/${task._id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ completed: true })
+            });
+            fetchTasks();
+          };
+
+          taskDiv.appendChild(info);
+          taskDiv.appendChild(completeBtn);
+          tasksDiv.appendChild(taskDiv);
+        }
+      });
+    }
+
+    async function addTask() {
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      if (!title) return alert("Task title required");
+
+      await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description })
+      });
+
+      document.getElementById('title').value = '';
+      document.getElementById('description').value = '';
+      fetchTasks();
+    }
+
+    fetchTasks();
+  </script>
+</body>
+</html>
