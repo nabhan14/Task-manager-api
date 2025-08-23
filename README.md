@@ -1,2 +1,3 @@
 # Task-manager-api
-A full-stack Task Manager app with Node.js, Express, MySQL backend and an interactive frontend for managing tasks.
+A full-stack Task Manager application built with Node.js, Express, and MongoDB for the backend, and a simple interactive frontend for creating, viewing, updating, and deleting tasks.
+
